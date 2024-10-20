@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.xiangyueEducation.uploaderCloud.mapper.UserMapper">
+
+    <resultMap id="BaseResultMap" type="com.xiangyueEducation.uploaderCloud.POJO.User">
+            <id property="uuid" column="uuid" jdbcType="CHAR"/>
+            <result property="roleId" column="role_id" jdbcType="INTEGER"/>
+            <result property="departmentId" column="department_id" jdbcType="INTEGER"/>
+            <result property="identityCardCode" column="identity_card_code" jdbcType="VARCHAR"/>
+            <result property="isDelete" column="is_delete" jdbcType="INTEGER"/>
+
+    </resultMap>
+
+    <sql id="Base_Column_List">
+        uuid,role_id,department_id,
+        identity_card_code,pwd,is_delete
+    </sql>
+
+    <select id="selectAll" resultType="com.xiangyueEducation.uploaderCloud.admin.VO.UserAndUserInfoVO">
+        SELECT
+            u.uuid,
+            u.role_id,
+            u.department_id,
+            d.department_name,
+            u.identity_card_code,
+            u.is_delete,
+            ui.real_name,
+            ui.phone_number,
+            ui.address,
+            ui.email,
+            ui.gender,
+            ui.avatar_path,
+            ui.preview_avatar_path
+        FROM
+            user u
+                JOIN
+            user_info ui ON u.uuid = ui.uuid
+        LEFT JOIN
+            department d ON d.department_id = u.department_id
+    </select>
+    <select id="selectAllMaxPage" resultType="integer">
+        SELECT CEIL(COUNT(*) / #{pageSize})  FROM
+            user u
+                JOIN
+            user_info ui ON u.uuid = ui.uuid
+                LEFT JOIN
+            department d ON d.department_id = u.department_id
+    </select>
+</mapper>

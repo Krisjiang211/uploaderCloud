@@ -1,0 +1,112 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.xiangyueEducation.uploaderCloud.mapper.SelfCloudFileSpaceMapper">
+
+    <resultMap id="BaseResultMap" type="com.xiangyueEducation.uploaderCloud.POJO.SelfCloudFileSpace">
+            <id property="uuid" column="uuid" jdbcType="CHAR"/>
+            <id property="fileId" column="file_id" jdbcType="INTEGER"/>
+            <id property="fileCategoryId" column="file_category_id" jdbcType="INTEGER"/>
+            <result property="filePath" column="file_path" jdbcType="VARCHAR"/>
+            <result property="fileName" column="file_name" jdbcType="VARCHAR"/>
+            <result property="fileSize" column="file_size" jdbcType="INTEGER"/>
+            <result property="uploadTime" column="upload_time" jdbcType="TIMESTAMP"/>
+    </resultMap>
+
+    <sql id="Base_Column_List">
+        uuid,file_id,file_category_id,
+        file_path,file_name,file_size,
+        upload_time
+    </sql>
+
+    <select id="selectFileNameByUserId" resultType="string">
+        SELECT file_name
+        FROM self_cloud_file_space
+        WHERE uuid = #{UUID}
+    </select>
+
+    <select id="selectFileNameByUserIdDESC" resultType="string">
+        SELECT file_name
+        FROM self_cloud_file_space
+        WHERE uuid = #{UUID}
+        ORDER BY upload_time DESC
+    </select>
+
+    <select id="selectFileNameByFileIdASC" resultType="string">
+        SELECT file_name
+        FROM self_cloud_file_space
+        WHERE uuid = #{UUID}
+        ORDER BY upload_time ASC
+    </select>
+
+    <select id="getPageNumById" resultType="integer">
+        SELECT CEIL(COUNT(*) / #{pageSize}) AS count_per_page
+        FROM self_cloud_file_space
+        WHERE uuid = #{uuid};
+    </select>
+
+    <select id="getFileDetailByUuidAndFileName" resultType="hashmap">
+
+            SELECT file_size,
+                upload_time,
+                file_path,
+                (SELECT category_name
+                 FROM file_category
+                 WHERE file_category_id=self_cloud_file_space.file_category_id) AS category_name
+            FROM self_cloud_file_space
+            WHERE uuid = #{uuid} AND file_name = #{fileName}
+
+    </select>
+
+
+    <select id="getALLFileNameById" resultType="string">
+            SELECT file_name
+            FROM self_cloud_file_space
+            WHERE uuid = #{uuid}
+    </select>
+
+
+    <select id="getAllSizeByUserId" resultType="integer">
+            SELECT SUM(file_size)
+            from self_cloud_file_space
+            where uuid=#{uuid}
+    </select>
+
+
+    <select id="searchFileNameByKeyWord" resultType="string">
+        SELECT file_name
+        FROM self_cloud_file_space
+        where uuid=#{uuid} AND
+        file_name LIKE CONCAT('%',#{keyWord},'%')
+        ORDER BY upload_time DESC
+    </select>
+
+    <select id="getSearchPageNumById" resultType="integer">
+
+        SELECT CEIL(COUNT(*) / #{pageSize}) AS count_per_page
+        FROM self_cloud_file_space
+        WHERE uuid = #{uuid} AND
+        file_name LIKE CONCAT('%',#{keyWord},'%')
+    </select>
+
+    <select id="getAllFileNameByUuid" resultType="string">
+        SELECT file_name
+        FROM self_cloud_file_space
+        WHERE uuid=#{uuid}
+    </select>
+
+    <select id="getOneByFileNameAndUuid" resultType="com.xiangyueEducation.uploaderCloud.POJO.SelfCloudFileSpace">
+        SELECT *
+        FROM self_cloud_file_space
+        WHERE uuid=#{uuid} AND file_name=#{fileName}
+    </select>
+
+    <delete id="deleteByFileNameAndUuid">
+
+        DELETE FROM self_cloud_file_space
+        WHERE uuid=#{uuid} AND file_name=#{fileName}
+    </delete>
+
+
+</mapper>

@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.xiangyueEducation.uploaderCloud.mapper.FileCategoryMapper">
+
+    <resultMap id="BaseResultMap" type="com.xiangyueEducation.uploaderCloud.POJO.FileCategory">
+            <id property="fileCategoryId" column="file_category_id" jdbcType="INTEGER"/>
+            <result property="categoryName" column="category_name" jdbcType="VARCHAR"/>
+            <result property="createTime" column="create_time" jdbcType="TIMESTAMP"/>
+            <result property="isDelete" column="is_delete" jdbcType="INTEGER"/>
+    </resultMap>
+
+    <sql id="Base_Column_List">
+        file_category_id,category_name,create_time,is_delete
+    </sql>
+
+
+
+    <select id="selectAllCategory" resultType="string">
+
+        select category_name from file_category
+        WHERE is_delete = 0
+    </select>
+
+
+    <select id="getAll" resultType="com.xiangyueEducation.uploaderCloud.POJO.FileCategory">
+        SELECT * from file_category
+    </select>
+
+
+    <select id="selectCategoryIdByName" resultType="integer">
+        SELECT file_category_id FROM file_category WHERE category_name = #{categoryName}
+    </select>
+
+
+
+</mapper>

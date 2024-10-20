@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.xiangyueEducation.uploaderCloud.mapper.AuthoriseMapper">
+
+    <resultMap id="BaseResultMap" type="com.xiangyueEducation.uploaderCloud.POJO.Authorise">
+            <id property="authoriseId" column="authorise_id" jdbcType="INTEGER"/>
+            <result property="publishId" column="publish_id" jdbcType="INTEGER"/>
+            <result property="requesterUuid" column="requester_uuid" jdbcType="VARCHAR"/>
+            <result property="isAuthorise" column="is_authorise" jdbcType="TINYINT"/>
+            <result property="time" column="time" jdbcType="TIMESTAMP"/>
+            <result property="filePath" column="file_path" jdbcType="VARCHAR"/>
+            <result property="fileName" column="file_name" jdbcType="VARCHAR"/>
+            <result property="secretKey" column="secret_key" jdbcType="VARCHAR"/>
+
+    </resultMap>
+
+    <sql id="Base_Column_List">
+        authorise_id,publish_id,
+        requester_uuid,is_authorise,
+        time,file_path,file_name,secret_key
+    </sql>
+
+    <select id="selectRole1UsePage" resultType="com.xiangyueEducation.uploaderCloud.POJO.Authorise">
+        SELECT * FROM authorise
+        WHERE requester_uuid = #{roleUuid}
+        ORDER BY time ${order}
+    </select>
+    <select id="selectMaxPageRole1" resultType="integer">
+        SELECT CEIL(COUNT(*)/#{pageSize}) FROM authorise
+        WHERE requester_uuid = #{uuid}
+    </select>
+
+    <select id="selectRole2UsePage" resultType="com.xiangyueEducation.uploaderCloud.POJO.Authorise">
+        SELECT * FROM authorise
+        WHERE publish_id IN (
+            SELECT publish_id FROM publish
+            WHERE uuid=#{uuid}
+            )
+        ORDER BY time ${order}
+    </select>
+    <select id="selectMaxPageRole2" resultType="integer">
+        SELECT CEIL(COUNT(*)/#{pageSize}) FROM authorise
+        WHERE publish_id IN (
+            SELECT publish_id FROM publish
+            WHERE uuid=#{uuid}
+        )
+    </select>
+
+
+
+</mapper>

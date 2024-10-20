@@ -1,0 +1,115 @@
+
+spring:
+  application:
+    name: uploaderCloud
+  servlet:
+    multipart:
+      max-file-size: 5MB
+      max-request-size: 5MB
+      enabled: true
+  web:
+    resources:
+      # TODO 开发环境------静态资源配置
+#      static-locations: classpath:fileSystem/
+
+      #TODO 生产环境------静态资源配置
+      static-locations: classpath:fileSystem/, file:/source/uploaderCloud/server/fileSystem/
+
+
+  # 数据库配置
+  datasource:
+    type: com.alibaba.druid.pool.DruidDataSource
+    druid:
+      url: jdbc:mysql://mysql:3306/uploadercloud
+#      url: jdbc:mysql://localhost:3306/uploadercloud
+      username: root
+      # TODO 生产环境------数据库密码
+      password: Df*g272gfc9Y*fcfSK71*IBc0
+#      password: 801219Abc***
+      driver-class-name: com.mysql.cj.jdbc.Driver
+
+  # TODO redis配置,开发环境
+  data:
+    redis:
+      host: redis
+      port: 6379
+      password: 123456
+#    redis:
+#      host: 172.22.212.241
+#      port: 7777
+#      password: 123456
+
+
+# 服务器配置
+server:
+  port: 1314
+  servlet:
+    context-path: /
+  ssl:
+    key-store: classpath:save.woyaoxueyi.com.pfx
+    key-store-password: 23r9455aii
+    key-store-type: PKCS12
+    enabled: true
+
+
+
+
+
+# 日志配置
+logging:
+  level:
+    root: info
+  file:
+    name: ../../log/mainFile.log  # 将路径修改为相对路径，并确保父目录存在
+  pattern:
+    file: '%d{yyyy-MM-dd HH:mm:ss.SSS} [%thread] %-5level %logger{50}  =======>  %msg%n'
+    console: '%d{yyyy-MM-dd HH:mm:ss.SSS}  %clr(%-5level) %clr(%logger{50})  =======>  %msg%n'
+  logback:
+    rollingpolicy:
+      max-file-size: 50MB
+      file-name-pattern: '../../log/mainFile.%d{yyyy-MM-dd}.%i.log'
+      total-size-cap: 1GB
+      max-history: 7
+
+
+
+
+#jwt
+jwt:
+  token:
+    tokenExpiration: 88888
+    tokenSignKey: jxjhsm99
+
+# mybatis-plus
+mybatis-plus:
+  type-aliases-package: com.xiangyueEducation.uploaderCloud.POJO
+  global-config:
+    db-config:
+      logic-delete-field: isDeleted
+      id-type: auto
+
+
+# swagger
+springdoc:
+  swagger-ui:
+    path : /apiDoc
+
+
+
+custom:
+  resource:
+    base-path: fileSystem
+
+
+
+resource:
+  key:
+    preview: 123456
+    download: xiangyue
+
+
+# TODO 生产环境---getRealPath需要用
+file:
+  upload:
+    directory: /source/uploaderCloud/server/
+#    directory: /www/wwwroot/default/

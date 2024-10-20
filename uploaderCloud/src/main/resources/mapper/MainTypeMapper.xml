@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.xiangyueEducation.uploaderCloud.mapper.MainTypeMapper">
+
+    <resultMap id="BaseResultMap" type="com.xiangyueEducation.uploaderCloud.POJO.MainType">
+            <id property="mainTypeId" column="main_type_id" jdbcType="INTEGER"/>
+            <result property="name" column="name" jdbcType="VARCHAR"/>
+            <result property="time" column="time" jdbcType="TIMESTAMP"/>
+            <result property="isDelete" column="is_delete" jdbcType="INTEGER"/>
+    </resultMap>
+
+    <sql id="Base_Column_List">
+        main_type_id,name,time,is_delete
+    </sql>
+
+    <select id="selectAllMainTypeName" resultType="string">
+        SELECT name FROM main_type
+        WHERE is_delete = 0
+    </select>
+
+    <select id="selectAll" resultType="com.xiangyueEducation.uploaderCloud.POJO.MainType">
+        SELECT * FROM main_type
+    </select>
+
+</mapper>

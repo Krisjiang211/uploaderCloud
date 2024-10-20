@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.xiangyueEducation.uploaderCloud.mapper.MainAndViceTypeMapper">
+
+    <resultMap id="BaseResultMap" type="com.xiangyueEducation.uploaderCloud.POJO.MainAndViceType">
+            <id property="mainAndViceTypeId" column="main_and_vice_type_id" jdbcType="INTEGER"/>
+            <result property="mainTypeId" column="main_type_id" jdbcType="INTEGER"/>
+            <result property="viceTypeId" column="vice_type_id" jdbcType="INTEGER"/>
+            <result property="isDelete" column="is_delete" jdbcType="INTEGER"/>
+            <result property="time" column="time" jdbcType="TIMESTAMP"/>
+    </resultMap>
+
+    <sql id="Base_Column_List">
+        main_and_vice_type_id,main_type_id,vice_type_id,
+        time,is_delete
+    </sql>
+
+    <select id="selectAll" resultType="com.xiangyueEducation.uploaderCloud.POJO.MainAndViceType">
+        SELECT * FROM main_and_vice_type
+        WHERE is_delete = 0
+    </select>
+
+    <select id="getAll" resultType="com.xiangyueEducation.uploaderCloud.POJO.MainAndViceType">
+        SELECT * FROM main_and_vice_type
+    </select>
+
+    <select id="getAllVO" resultType="com.xiangyueEducation.uploaderCloud.admin.VO.MainAndViceTypeVO">
+        SELECT mav.main_and_vice_type_id,
+               mt.name AS main_type_name,
+               vt.name AS vice_type_name,
+               mav.time,
+               mav.is_delete
+        FROM main_and_vice_type mav
+        JOIN main_type mt ON mav.main_type_id = mt.main_type_id
+        JOIN vice_type vt ON mav.vice_type_id = vt.vice_type_id
+    </select>
+</mapper>

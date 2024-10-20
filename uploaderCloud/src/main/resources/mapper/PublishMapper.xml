@@ -1,0 +1,162 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.xiangyueEducation.uploaderCloud.mapper.PublishMapper">
+
+    <resultMap id="BaseResultMap" type="com.xiangyueEducation.uploaderCloud.POJO.Publish">
+            <id property="taskContentId" column="task_content_id" jdbcType="INTEGER"/>
+            <id property="uuid" column="uuid" jdbcType="CHAR"/>
+            <id property="fileGroupCategoryId" column="file_group_category_id" jdbcType="INTEGER"/>
+            <result property="publishId" column="publish_id" jdbcType="INTEGER"/>
+            <result property="createTime" column="create_time" jdbcType="TIMESTAMP"/>
+            <result property="mainAndViceTypeId" column="main_and_vice_type_id" jdbcType="INTEGER"/>
+            <result property="departmentId" column="department_id" jdbcType="INTEGER"/>
+            <result property="isDelete" column="is_delete" jdbcType="INTEGER"/>
+
+    </resultMap>
+
+    <sql id="Base_Column_List">
+        task_content_id,uuid,file_group_category_id,
+        publish_id,create_time,main_and_vice_type_id,
+        department_id,is_delete
+    </sql>
+
+    <select id="selectPublishByDepartmentId" resultType="com.xiangyueEducation.uploaderCloud.POJO.Publish">
+    SELECT * from publish
+    WHERE department_id=#{departmentId}
+    AND is_delete=0
+    ORDER BY create_time ${order}
+    </select>
+    <select id="selectPublishByDepartmentIdMainAndViceTypeId" resultType="com.xiangyueEducation.uploaderCloud.POJO.Publish">
+        SELECT * from publish
+        WHERE department_id=#{departmentId}
+        AND main_and_vice_type_id=#{mainAndViceTypeId}
+        AND is_delete=0
+        ORDER BY create_time ${order}
+    </select>
+
+
+    <select id="getMaxPages" resultType="integer">
+
+        SELECT CEIL(COUNT(*)/#{pageSize}) FROM publish
+        WHERE department_id=#{departmentId}
+        AND is_delete=0
+    </select>
+    <select id="getMaxPagesMVType" resultType="integer">
+        SELECT CEIL(COUNT(*)/#{pageSize}) FROM publish
+        WHERE department_id=#{departmentId} AND
+              main_and_vice_type_id=#{mainAndViceTypeId}
+              AND is_delete=0
+    </select>
+
+
+    <select id="selectPublishByDepartmentIdAndFileGroupCate" resultType="com.xiangyueEducation.uploaderCloud.POJO.Publish">
+        SELECT * FROM publish
+        WHERE department_id=#{departmentId} AND
+        file_group_category_id=#{fileGroupCateId} AND
+        is_delete=0
+        ORDER BY create_time ${order}
+    </select>
+    <select id="selectPublishByDepartmentIdAndFileGroupCateMVType" resultType="com.xiangyueEducation.uploaderCloud.POJO.Publish">
+        SELECT * FROM publish
+        WHERE department_id=#{departmentId} AND
+            file_group_category_id=#{fileGroupCateId} AND
+            main_and_vice_type_id=#{mainAndViceTypeId} AND
+            is_delete=0
+        ORDER BY create_time ${order}
+    </select>
+
+    <select id="getMaxPagesFileGroupCate" resultType="integer">
+        SELECT CEIL(COUNT(*)/#{pageSize}) FROM publish
+        WHERE department_id=#{departmentId} AND
+              file_group_category_id=#{fileGroupCategoryId} AND
+              is_delete=0
+    </select>
+    <select id="getMaxPagesFileGroupCateMVType" resultType="integer">
+        SELECT CEIL(COUNT(*)/#{pageSize}) FROM publish
+        WHERE department_id=#{departmentId} AND
+            file_group_category_id=#{fileGroupCategoryId}
+            AND main_and_vice_type_id=#{mainAndViceTypeId} AND
+                is_delete=0
+    </select>
+
+
+    <select id="getPublishIdByFileCateGoryId" resultType="integer">
+        SELECT publish_id FROM publish
+        WHERE department_id=#{departmentId} AND
+              is_delete=0 AND
+              task_content_id IN(
+                  SELECT task_content_id FROM task_content
+                        WHERE file_group_id IN(
+                            SELECT group_id FROM task_file_group
+                                WHERE file_category_id =#{fileCategoryId}
+                            )
+                )
+        ORDER BY create_time ${order}
+    </select>
+    <select id="getPublishIdByFileCateGoryIdMVType" resultType="integer">
+        SELECT publish_id FROM publish
+        WHERE department_id=#{departmentId} AND
+              is_delete=0 AND
+              main_and_vice_type_id=#{mainAndViceTypeId} AND
+                task_content_id IN(
+                SELECT task_content_id FROM task_content
+                WHERE file_group_id IN(
+                    SELECT group_id FROM task_file_group
+                    WHERE file_category_id =#{fileCategoryId}
+                )
+            )
+        ORDER BY create_time ${order}
+    </select>
+
+    <select id="getMaxPagesFileCategory" resultType="integer">
+        SELECT CEIL(COUNT(*)/#{pageSize}) FROM publish
+        WHERE department_id=#{departmentId} AND
+              is_delete=0 AND
+                task_content_id IN(
+                SELECT task_content_id FROM task_content
+                WHERE file_group_id IN(
+                    SELECT group_id FROM task_file_group
+                    WHERE file_category_id =#{fileCategoryId}
+                )
+            )
+    </select>
+    <select id="getMaxPagesFileCategoryMVType" resultType="integer">
+        SELECT CEIL(COUNT(*)/#{pageSize}) FROM publish
+        WHERE department_id=#{departmentId} AND
+              is_delete=0 AND
+              main_and_vice_type_id=#{mainAndViceTypeId} AND
+                task_content_id IN(
+                SELECT task_content_id FROM task_content
+                WHERE file_group_id IN(
+                    SELECT group_id FROM task_file_group
+                    WHERE file_category_id =#{fileCategoryId}
+                )
+            )
+    </select>
+
+    <select id="getSearchValueTimeSequence" resultType="com.xiangyueEducation.uploaderCloud.POJO.Publish">
+        SELECT * FROM publish
+        WHERE department_id=#{departmentId}
+        AND is_delete=0
+        AND task_content_id IN (
+            SELECT task_content_id FROM task_content
+            WHERE title LIKE CONCAT('%',#{searchValue},'%')
+            )
+        ORDER BY create_time ${order}
+
+    </select>
+    <select id="getPageNumsOfSearchValueTimeSequence" resultType="integer">
+        SELECT CEIL(COUNT(*)/#{pageSize}) FROM publish
+        WHERE department_id=#{departmentId}
+          AND is_delete=0
+          AND task_content_id IN (
+            SELECT task_content_id FROM task_content
+            WHERE title LIKE CONCAT('%',#{searchValue},'%')
+        )
+        ORDER BY create_time ${order}
+
+    </select>
+
+</mapper>
